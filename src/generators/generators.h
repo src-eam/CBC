@@ -1,3 +1,6 @@
+/*
+ * Интерфейс для генераторов случайных чисел.
+ */
 #ifndef GENERATORS_H_
 #define GENERATORS_H_
 
