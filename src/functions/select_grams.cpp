@@ -26,7 +26,8 @@ void SelectGramsFunc::counting_statistics(const std::string &data,
 			if (table[grams] > 0) {
 				table[grams]++;
 				unigram_count++;
-			} else {
+			}
+			else {
 				table[grams] = 1;
 				unigram_count++;
 			}
@@ -37,7 +38,8 @@ void SelectGramsFunc::counting_statistics(const std::string &data,
 					if (table[grams] > 0) {
 						table[grams]++;
 						digram_count++;
-					} else {
+					}
+					else {
 						table[grams] = 1;
 						digram_count++;
 					}
@@ -48,7 +50,8 @@ void SelectGramsFunc::counting_statistics(const std::string &data,
 							if (table[grams] > 0) {
 								table[grams]++;
 								trigram_count++;
-							} else {
+							}
+							else {
 								table[grams] = 1;
 								trigram_count++;
 							}
@@ -72,8 +75,10 @@ void SelectGramsFunc::counting_statistics(const std::string &data,
 			(*iter).second /= trigram_count;
 	}
 }
-SelectGramsFunc::SelectGramsFunc(const std::string & filename) {
+SelectGramsFunc::SelectGramsFunc(const std::string & filename,
+		const double &minCost) {
 	nameFunc = NAME_FOR_FUNC;
+	MIN_COST = minCost;
 	std::ifstream ifs;
 	ifs.open(filename);
 	if (!ifs.is_open()) {
@@ -93,7 +98,6 @@ SelectGramsFunc::SelectGramsFunc(const std::string & filename) {
 
 double SelectGramsFunc::getCost(const std::string &txt) {
 	this->counting_statistics(txt, cur_stat_table);
-	std::cout<< cur_stat_table["t"]<<" "<<ALPHA<<std::endl;
 	double unigrams = 0, digrams = 0, trigrams = 0;
 	int len;
 	double sub = 0;
@@ -109,7 +113,8 @@ double SelectGramsFunc::getCost(const std::string &txt) {
 			digrams += fabs(sub);
 		else if (len == 3)
 			trigrams += fabs(sub);
-		 cur_stat_table[(*it).first] = 0;
+		cur_stat_table[(*it).first] = 0;
 	}
 	return ALPHA * unigrams + BETA * digrams + GAMA * trigrams;
 }
+

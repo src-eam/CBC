@@ -15,6 +15,7 @@ private:
 	static constexpr double ALPHA = 0.5;
 public:
 	virtual double getCost(const std::string &);
+	explicit RubbishGramsFunc(const double &min_cost);
 	RubbishGramsFunc();
 	~RubbishGramsFunc() {};
 };

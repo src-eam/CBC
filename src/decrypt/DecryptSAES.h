@@ -1,7 +1,6 @@
 /*
  * DecryptSAES.h
  *
- *  Created on: 15 июля 2014 г.
  *      Author: eugene
  */
 
@@ -20,6 +19,9 @@ protected:
 public:
 	virtual std::string decrypt(const int &key);
 	virtual void decrypt(std::string & resultDecrypt,const int &k);
+	virtual unsigned int getPossibleKey() const;
+	virtual unsigned int getDimDecrypt() const;
+	virtual unsigned int getLengthData() const;
 
 	DecryptSAES();
 	explicit DecryptSAES(const std::string &txt);

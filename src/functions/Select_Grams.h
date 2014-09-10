@@ -24,7 +24,7 @@ protected:
 	void counting_statistics(const std::string &data,
 			std::unordered_map<std::string, double> &table);
 public:
-	explicit SelectGramsFunc(const std::string &);
+	SelectGramsFunc(const std::string &,const double &minCost);
 	virtual double getCost(const std::string &);
 	~SelectGramsFunc() {};
 };

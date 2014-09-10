@@ -1,7 +1,8 @@
 #include "DecryptSAES.h"
+#include "../generators/DEV_Generator.h"
 
-const uint8_t DecryptSAES::s_box_i[16] = { 0xa, 0x5, 0x9, 0xb, 0x1, 0x7, 0x8, 0xf, 0x6, 0x0, 0x2,
-				0x3, 0xc, 0x4, 0xd, 0xe };
+const uint8_t DecryptSAES::s_box_i[16] = { 0xa, 0x5, 0x9, 0xb, 0x1, 0x7, 0x8,
+		0xf, 0x6, 0x0, 0x2, 0x3, 0xc, 0x4, 0xd, 0xe };
 
 void DecryptSAES::invSubNibbles() {
 	for (uint8_t ind = 0; ind < Nk; ind++) {
@@ -33,7 +34,7 @@ void DecryptSAES::decryptSAES() {
 
 std::string DecryptSAES::decrypt(const int &key) {
 	std::string result;
-	decrypt(result,key);
+	decrypt(result, key);
 	return result;
 }
 
@@ -42,7 +43,7 @@ void DecryptSAES::decrypt(std::string &resultDecrypt, const int &key) {
 		resultDecrypt = "";
 	else {
 		keyExpand(key);
-		if(resultDecrypt.capacity() < text.size() )
+		if (resultDecrypt.capacity() < text.size())
 			resultDecrypt.reserve(this->text.size());
 		for (auto iter = this->text.begin(); iter != this->text.end(); iter +=
 				2) {
@@ -64,7 +65,19 @@ DecryptSAES::DecryptSAES(const std::string &txt) {
 		text += " ";
 }
 
+unsigned int DecryptSAES::getLengthData() const {
+	return text.length();
+}
+
 DecryptSAES::~DecryptSAES() {
 	;
 }
 
+unsigned int DecryptSAES::getPossibleKey() const {
+	DEV_Generator gen("/dev/urandom");
+	return (unsigned int) gen.getMinMaxRandom(1, KEY_MAX);
+}
+
+unsigned int DecryptSAES::getDimDecrypt() const {
+	return DIM_SAES;
+}

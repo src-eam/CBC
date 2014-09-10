@@ -12,11 +12,19 @@
 class IFunctionCost {
 protected:
 	std::string nameFunc;
+	double MIN_COST;
 public:
-	std::string getNameFunc() const{
+	std::string getNameFunc() const {
 		return this->nameFunc;
-	};
+	}
+	;
 	virtual double getCost(const std::string &) = 0;
+	double getMinCost() {
+		return MIN_COST;
+	}
+	void setMinCost(const double &cost)  {
+		MIN_COST = cost;
+	}
 	virtual ~IFunctionCost() {};
 };
 
