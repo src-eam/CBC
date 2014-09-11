@@ -25,7 +25,8 @@ double analis_key(Particle &gbest, unsigned int key) {
 	return (succ / gbest.getDim()) * 100;
 }
 
-void printResult(ostream &out,IPSO *&pso,const unsigned int &count_iter,const unsigned int &KEY) {
+void printResult(ostream &out, IPSO *&pso, const unsigned int &count_iter,
+		const unsigned int &KEY) {
 	Particle g_best = pso->getBestParticle();
 	unsigned int key_result = g_best.getValueParticle();
 	out << "COST_RESULT: " << g_best.getCost() << endl;
@@ -40,7 +41,7 @@ void printResult(ostream &out,IPSO *&pso,const unsigned int &count_iter,const un
 }
 
 int main(int argc, char *argv[]) {
-	if(argc != 3) {
+	if (argc != 4) {
 		cerr << "Error input arguments.\n";
 		exit(EXIT_FAILURE);
 	}
@@ -48,7 +49,8 @@ int main(int argc, char *argv[]) {
 	std::string dataFile = string(argv[2]);
 	unsigned int KEY = atoi(argv[1]);
 
-	string reportFile = "report_JKISS.dat";
+	string reportFile = string(argv[3]);
+
 
 	ifstream data_file(dataFile);
 
@@ -68,36 +70,39 @@ int main(int argc, char *argv[]) {
 
 	IDecrypt *decryptApi = new DecryptSAES(data);
 
-	//IFunctionCost *funcCost = new RubbishGramsFunc();
-	IFunctionCost *funcCost = new SelectGramsFunc("/home/eugene/workspace/CryptE/src/system_data/select_statistics.dat",0);
+	IFunctionCost *funcCost = new RubbishGramsFunc();
+	/*IFunctionCost *funcCost =
+			new SelectGramsFunc(
+					"/home/eugene/workspace/CryptE/src/system_data/select_statistics.dat",
+					0);*/
 	funcCost->setMinCost(funcCost->getCost(decryptApi->decrypt(KEY)));
 
 	IRandomGenerator *gen = new JKISS_Generator();
 	//cout << funcCost->getCost(decryptApi->decrypt(KEY) << endl;
-	IPSO *pso = new OriginalPSO(decryptApi, funcCost, gen,
+/*	IPSO *pso = new OriginalPSO(decryptApi, funcCost, gen,
 			"/home/eugene/workspace/CryptE/report.txt",
 			//"/home/eugene/workspace/CryptE/src/system_data/gen_key.txt");
-			"");
-	/*IPSO *pso = new TasgetirenPSO(decryptApi, funcCost, gen,
-				"/home/eugene/workspace/CryptE/report.txt",
-				//"/home/eugene/workspace/CryptE/src/system_data/gen_key.txt");
-				"");*/
+			"");*/
+	IPSO *pso = new TasgetirenPSO(decryptApi, funcCost, gen,
+	 "/home/eugene/workspace/CryptE/report.txt",
+	 //"/home/eugene/workspace/CryptE/src/system_data/gen_key.txt");
+	 "");
 
 	/*IPSO *pso = new ModifiedPSO(decryptApi, funcCost, gen,
-					"/home/eugene/workspace/CryptE/report.txt",
-					//"/home/eugene/workspace/CryptE/src/system_data/gen_key.txt");
-					"");*/
+	 "/home/eugene/workspace/CryptE/report.txt",
+	 //"/home/eugene/workspace/CryptE/src/system_data/gen_key.txt");
+	 "");*/
 	/*IPSO *pso = new NovelPSO(decryptApi, funcCost, gen,
-						"/home/eugene/workspace/CryptE/report.txt",
-						//"/home/eugene/workspace/CryptE/src/system_data/gen_key.txt");
-						"");*/
+	 "/home/eugene/workspace/CryptE/report.txt",
+	 //"/home/eugene/workspace/CryptE/src/system_data/gen_key.txt");
+	 "");*/
 	pso->printInit(fileOut);
 	pso->printInit(cout);
 	unsigned int count_iter = pso->attacking_pso();
 	Particle g_best = pso->getBestParticle();
 
-	printResult(fileOut,pso,count_iter,KEY);
-	printResult(cout,pso,count_iter,KEY);
+	printResult(fileOut, pso, count_iter, KEY);
+	printResult(cout, pso, count_iter, KEY);
 	//cout << decryptApi->decrypt(g_best.getValueParticle());
 
 	delete decryptApi;

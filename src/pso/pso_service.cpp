@@ -214,7 +214,7 @@ unsigned int IPSO::attacking_pso() {
 		iterations++;
 		update_particles();
 		std::cout << "G_BEST: " << g_best << ". ITER: " << iterations
-				<< std::endl;
+				<< ". SEARCH_KEYS: " << search_keys << std::endl;
 	}
 	return iterations;
 }
