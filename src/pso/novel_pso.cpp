@@ -12,7 +12,7 @@ NovelPSO::NovelPSO(IDecrypt *&decrypt, IFunctionCost *&func,
 		IRandomGenerator *&randG, const std::string &outFile,
 		const std::string & fileKeys) {
 	this->init_pso(decrypt, func, randG, outFile);
-	generate_particles(fileKeys);
+	//generate_particles(fileKeys);
 	algName = NAME_VERSION_PSO;
 	vel_one.resize(INITIAL_POPULATION, std::vector<double>(dim));
 	vel_zero.resize(INITIAL_POPULATION, std::vector<double>(dim));
@@ -89,18 +89,14 @@ void NovelPSO::update_particles() {
 					+ d_one_2;
 			vel_zero[i_th][j_th] = INETRIA_WEIGHT * vel_zero[i_th][j_th]
 					+ d_zero_1 + d_zero_2;
-			/*if (randGenAlg->getRandom_01() < R_MUT) {
-			 vel_one[i_th][j_th] *= -1;
-			 vel_zero[i_th][j_th] *= -1;
-			 }*/
+
 			tmp = particle->getIndParticle(j_th);
 			next_velocity =
 					(tmp == 1) ? vel_zero[i_th][j_th] : vel_one[i_th][j_th];
-			/*particle->setIndVelocity(j_th,
-			 (tmp == 1) ?
-			 vel_zero[i_th][j_th] : vel_one[i_th][j_th]);*/
 			if (randGenAlg->getRandom_01() < R_MUT) {
 				next_velocity *= -1;
+				/*(tmp == 1) ? vel_zero[i_th][j_th] *= -1 : vel_one[i_th][j_th] *=
+										-1;*/
 			}
 			particle->setIndVelocity(j_th, next_velocity);
 			particle->setIndParticle(j_th,

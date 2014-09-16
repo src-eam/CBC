@@ -12,5 +12,7 @@
 #include "functions/Select_Grams.h"
 #include "generators/DEV_Generator.h"
 #include "generators/JKISS_Generator.h"
+#include "generators/MersenneTwister_Generator.h"
+#include "generators/Fibonacci_Generator.h"
 
 #endif /* HEADERS_H_ */
