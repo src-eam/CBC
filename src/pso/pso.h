@@ -43,16 +43,12 @@ public:
 
 class IPSO {
 protected:
-	static const int INITIAL_POPULATION = 10;
-	static const int NUMBER_OF_ITERATION = 2000;
-/*	static constexpr double C1 = 1.42694;
-	static constexpr double C2 = 1.42694;
-	static constexpr double INETRIA_WEIGHT = 0.689343;
-	static constexpr double R_MUT = 0.4;*/
-	static constexpr double C1 = 1;
-	static constexpr double C2 = 3;
-	static constexpr double INETRIA_WEIGHT = 0.96;
-	static constexpr double R_MUT = 0.25;
+	int INITIAL_POPULATION;
+	int NUMBER_OF_ITERATION;
+	double C1;
+	double C2;
+	double INETRIA_WEIGHT;
+	double R_MUT;
 	unsigned int dim;
 	IDecrypt *decryptAlg;
 	IFunctionCost *funcCost;

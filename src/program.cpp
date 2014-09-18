@@ -1,10 +1,6 @@
 #include <iostream>
 #include <iterator>
-#include "generators/DEV_Generator.h"
-#include "functions/Select_Grams.h"
-#include "functions/Rubbish_Grams.h"
 #include "pso/pso.h"
-#include "decrypt/DecryptSAES.h"
 #include "pso/original_pso.h"
 #include "pso/tasgetiren_pso.h"
 #include "pso/modified_pso.h"
@@ -51,7 +47,6 @@ int main(int argc, char *argv[]) {
 
 	string reportFile = string(argv[3]);
 
-
 	ifstream data_file(dataFile);
 
 	if (!data_file.is_open()) {
@@ -68,34 +63,104 @@ int main(int argc, char *argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
+	ifstream config(
+			"/home/eugene/workspace/CryptE/src/system_data/configPSO.dat");
+	if (!config.is_open()) {
+		cerr << "Error opening config file: configPSO.dat." << endl;
+		exit(EXIT_FAILURE);
+	}
+
+	string str;
+
 	IDecrypt *decryptApi = new DecryptSAES(data);
+	IRandomGenerator *gen;
+	IFunctionCost *funcCost;
+	IPSO *pso;
 
-	IFunctionCost *funcCost = new RubbishGramsFunc();
-	/*IFunctionCost *funcCost =
-			new SelectGramsFunc(
-					"/home/eugene/workspace/CryptE/src/system_data/select_statistics.dat",
-					0);*/
-	funcCost->setMinCost(funcCost->getCost(decryptApi->decrypt(KEY)));
+	while (!config.eof()) {
+		config >> str;
+		if (str == "RAND:") {
+			config >> str;
+			if (str == "JKISS") {
+				gen = new JKISS_Generator();
+			}
+			else if (str == "MersenneTwister") {
+				gen = new MersenneTwister_Generator();
+			}
+			else if (str == "Fibonacci60") {
+				gen = new Fibonacci_Generator();
+			}
+			else if (str == "/dev/urandom") {
+				gen = new DEV_Generator("/dev/urandom");
+			}
+			else {
+				cerr << "Error config data. Generator undefined.\n";
+				config.close();
+				delete decryptApi;
+				fileOut.close();
+				exit(EXIT_FAILURE);
+			}
+		}
+		else if (str == "COST_FUNC:") {
+			config >> str;
+			if (str == "Rubbish_Grams_Cost") {
+				funcCost = new RubbishGramsFunc();
+			}
+			else if (str == "Select_Grams_Cost") {
+				funcCost =
+						new SelectGramsFunc(
+								"/home/eugene/workspace/CryptE/src/system_data/select_statistics.dat",
+								0);
+			}
+			else {
+				cerr << "Error config data. Function undefined.\n";
+				config.close();
+				delete decryptApi;
+				delete gen;
+				fileOut.close();
+				exit(EXIT_FAILURE);
+			}
+			funcCost->setMinCost(funcCost->getCost(decryptApi->decrypt(KEY)));
+		}
+		else if (str == "ALGORITHM:") {
+			config >> str;
+			if (str == "Original_PSO") {
+				pso = new OriginalPSO(decryptApi, funcCost, gen,
+						"/home/eugene/workspace/CryptE/report.txt",
+						//"/home/eugene/workspace/CryptE/src/system_data/gen_key.txt");
+						"");
+			}
+			else if (str == "Tasgetiren_PSO") {
+				pso = new TasgetirenPSO(decryptApi, funcCost, gen,
+						"/home/eugene/workspace/CryptE/report.txt",
+						//"/home/eugene/workspace/CryptE/src/system_data/gen_key.txt");
+						"");
+			}
+			else if (str == "Modified_PSO") {
+				pso = new ModifiedPSO(decryptApi, funcCost, gen,
+						"/home/eugene/workspace/CryptE/report.txt",
+						//"/home/eugene/workspace/CryptE/src/system_data/gen_key.txt");
+						"");
+			}
+			else if (str == "Novel_PSO") {
+				pso = new NovelPSO(decryptApi, funcCost, gen,
+						"/home/eugene/workspace/CryptE/report.txt",
+						//"/home/eugene/workspace/CryptE/src/system_data/gen_key.txt");
+						"");
+			}
+			else {
+				cerr << "Error config data. Algorithm undefined.\n";
+				config.close();
+				delete decryptApi;
+				delete funcCost;
+				delete gen;
+				fileOut.close();
+				exit(EXIT_FAILURE);
+			}
+		}
+	}
+	config.close();
 
-	IRandomGenerator *gen = new JKISS_Generator();
-	//cout << funcCost->getCost(decryptApi->decrypt(KEY) << endl;
-/*	IPSO *pso = new OriginalPSO(decryptApi, funcCost, gen,
-			"/home/eugene/workspace/CryptE/report.txt",
-			//"/home/eugene/workspace/CryptE/src/system_data/gen_key.txt");
-			"");*/
-	IPSO *pso = new TasgetirenPSO(decryptApi, funcCost, gen,
-	 "/home/eugene/workspace/CryptE/report.txt",
-	 //"/home/eugene/workspace/CryptE/src/system_data/gen_key.txt");
-	 "");
-
-	/*IPSO *pso = new ModifiedPSO(decryptApi, funcCost, gen,
-	 "/home/eugene/workspace/CryptE/report.txt",
-	 //"/home/eugene/workspace/CryptE/src/system_data/gen_key.txt");
-	 "");*/
-	/*IPSO *pso = new NovelPSO(decryptApi, funcCost, gen,
-	 "/home/eugene/workspace/CryptE/report.txt",
-	 //"/home/eugene/workspace/CryptE/src/system_data/gen_key.txt");
-	 "");*/
 	pso->printInit(fileOut);
 	pso->printInit(cout);
 	unsigned int count_iter = pso->attacking_pso();
@@ -103,7 +168,6 @@ int main(int argc, char *argv[]) {
 
 	printResult(fileOut, pso, count_iter, KEY);
 	printResult(cout, pso, count_iter, KEY);
-	//cout << decryptApi->decrypt(g_best.getValueParticle());
 
 	delete decryptApi;
 	delete funcCost;

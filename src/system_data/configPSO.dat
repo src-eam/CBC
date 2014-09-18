@@ -1,0 +1,3 @@
+RAND: /dev/urandom
+COST_FUNC: Select_Grams_Cost
+ALGORITHM: Original_PSO

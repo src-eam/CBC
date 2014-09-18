@@ -111,6 +111,36 @@ void IPSO::generateSwarmKeys(std::vector<unsigned int> &keysGen,const std::strin
 
 void IPSO::init_pso(IDecrypt *&decrypt, IFunctionCost *&func,
 		IRandomGenerator *&randG,const std::string &outFile) {
+	std::ifstream paramFile(
+			"/home/eugene/workspace/CryptE/src/system_data/parametrsPSO.dat"); //TODO не хорошо.
+	if (!paramFile.is_open()) {
+		std::cerr << "Error opening file : parametrsPSO.dat" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	std::string str;
+	while (!paramFile.eof()) {
+		paramFile >> str;
+		if (str == "INITIAL_POPULATION:") {
+			paramFile >> INITIAL_POPULATION;
+		}
+		else if (str == "NUMBER_OF_ITERATION:") {
+			paramFile >> NUMBER_OF_ITERATION;
+		}
+		else if (str == "C1:") {
+			paramFile >> C1;
+		}
+		else if (str == "C2:") {
+			paramFile >> C2;
+		}
+		else if (str == "INETRIA_WEIGHT:") {
+			paramFile >> INETRIA_WEIGHT;
+		}
+		else if (str == "R_MUT:") {
+			paramFile >> R_MUT;
+		}
+	}
+	paramFile.close();
+
 	this->decryptAlg = decrypt;
 	this->funcCost = func;
 	this->randGenAlg = randG;
@@ -125,7 +155,6 @@ void IPSO::init_pso(IDecrypt *&decrypt, IFunctionCost *&func,
 		exit(EXIT_FAILURE);
 	}
 }
-
 void IPSO::generate_particles(const std::string &fileKeys){
 	std::vector<unsigned int> keysGen(INITIAL_POPULATION);
 	generateSwarmKeys(keysGen,fileKeys);
