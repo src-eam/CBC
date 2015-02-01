@@ -20,7 +20,8 @@ protected:
 	void velocity_update(const unsigned int &index);
 public:
 	NovelPSO(IDecrypt *&decrypt, IFunctionCost *&func, IRandomGenerator *&randG,
-			const std::string &outFile, const std::string & fileKeys);
+			const std::string &outFile, const std::string & fileKeys,
+			const unsigned int &population);
 	~NovelPSO() {};
 };
 

@@ -10,16 +10,15 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <unordered_map>
 #include "../headersPSO.h"
-
-//TODO Привязка ключей алгоритма расшифрования к типу unsigned int
 
 class Particle {
 protected:
 	unsigned int dim;
 	std::vector<unsigned int> particle;
 	std::vector<double> velocity;
-	unsigned int value_particle;
+	std::string value_particle;
 	double cost;
 public:
 	explicit Particle(const unsigned int &dim);
@@ -28,8 +27,8 @@ public:
 	void setIndParticle(const unsigned int &index, const unsigned int &value);
 	double getIndVelocity(const unsigned int &index) const;
 	void setIndVelocity(const unsigned int &index, const double &value);
-	unsigned int getValueParticle() const;
-	void setValueParticle(const unsigned int & value);
+	std::string getValueParticle() const;
+	void setValueParticle(const std::string & value);
 	unsigned int getDim() const;
 	virtual void setDim(const unsigned int &dim);
 	double getCost() const;
@@ -43,8 +42,8 @@ public:
 
 class IPSO {
 protected:
-	int INITIAL_POPULATION;
-	int NUMBER_OF_ITERATION;
+	unsigned int INITIAL_POPULATION;
+	unsigned int NUMBER_OF_ITERATION = 2000;
 	double C1;
 	double C2;
 	double INETRIA_WEIGHT;
@@ -55,21 +54,27 @@ protected:
 	IRandomGenerator *randGenAlg;
 	std::vector<Particle> swarm;
 	std::vector<Particle> p_best;
-	std::vector<double> key_cost; //TODO Привязка ключей к типу unsigned int
+	std::unordered_map<std::string, double> key_cost;
 	Particle g_best;
 	unsigned int search_keys;
-	std::ofstream output;
+	//std::ofstream output;
 	std::string algName;
+	std::vector<std::string> keysInit;
 
 	double signum_function(const double &v) const;
-	unsigned int masbin_to_int(Particle *&p) const;
-	double compute_cost_value(const unsigned int &key);
+//	unsigned int masbin_to_int(Particle *&p) const;
+	void convert_binary_key_to_hex(Particle *&p,
+			std::vector<uint8_t> &key) const;
+	void convert_key_to_binary(const std::vector<uint8_t> &key,
+			Particle &p) const;
+	double compute_cost_value(const std::vector<uint8_t> &key);
 	virtual void update_particles() = 0;
-	void generateSwarmKeys(std::vector<unsigned int> &keysGen,
+	void generateSwarmKeys(std::vector<std::vector<uint8_t>> &keysGen,
 			const std::string &fileKeys);
 	void generate_particles(const std::string &fileKeys);
 	void init_pso(IDecrypt *&decrypt, IFunctionCost *&func,
-			IRandomGenerator *&randG, const std::string &outFile);
+			IRandomGenerator *&randG, const std::string &outFile,
+			const unsigned int &population);
 	void update_best_particle(Particle *& particle, const unsigned int &index);
 public:
 	void printInit(std::ostream & os);
@@ -77,6 +82,7 @@ public:
 	unsigned int getSearchKeys() const;
 	Particle getBestParticle() const;
 	unsigned int attacking_pso();
+	void setIteration(const unsigned int &iteration);
 	virtual ~IPSO();
 };
 

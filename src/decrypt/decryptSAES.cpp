@@ -1,5 +1,6 @@
 #include "DecryptSAES.h"
 #include "../generators/DEV_Generator.h"
+#include <climits>
 
 const uint8_t DecryptSAES::s_box_i[16] = { 0xa, 0x5, 0x9, 0xb, 0x1, 0x7, 0x8,
 		0xf, 0x6, 0x0, 0x2, 0x3, 0xc, 0x4, 0xd, 0xe };
@@ -32,13 +33,13 @@ void DecryptSAES::decryptSAES() {
 	addRoundKey(0);
 }
 
-std::string DecryptSAES::decrypt(const int &key) {
+std::string DecryptSAES::decrypt(const std::vector<uint8_t> &key) {
 	std::string result;
 	decrypt(result, key);
 	return result;
 }
 
-void DecryptSAES::decrypt(std::string &resultDecrypt, const int &key) {
+void DecryptSAES::decrypt(std::string &resultDecrypt, const std::vector<uint8_t> &key) {
 	if (this->text == "")
 		resultDecrypt = "";
 	else {
@@ -73,9 +74,11 @@ DecryptSAES::~DecryptSAES() {
 	;
 }
 
-unsigned int DecryptSAES::getPossibleKey() const {
+void DecryptSAES::getPossibleKey(std::vector<uint8_t> &key) const {
 	DEV_Generator gen("/dev/urandom");
-	return (unsigned int) gen.getMinMaxRandom(1, KEY_MAX);
+	unsigned int ch = (unsigned int) gen.getMinMaxRandom(1, UINT16_MAX);
+	key[0] = (ch & 0xff);
+	key[1] = ((ch & 0xff00) >> 8);
 }
 
 unsigned int DecryptSAES::getDimDecrypt() const {

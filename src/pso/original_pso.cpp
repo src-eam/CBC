@@ -9,8 +9,12 @@ const std::string OriginalPSO::NAME_VERSION_PSO = "Original_PSO";
 
 OriginalPSO::OriginalPSO(IDecrypt *&decrypt, IFunctionCost *&func,
 		IRandomGenerator *&randG, const std::string &outFile,
-		const std::string &fileKeys) {
-	this->init_pso(decrypt, func, randG, outFile);
+		const std::string &fileKeys, const unsigned int &population) {
+	this->R_MUT = 0.25;
+	this->C1 = 1.42694;
+	this->C2 = 1.42694;
+	this->INETRIA_WEIGHT = 0.689343;
+	this->init_pso(decrypt, func, randG, outFile, population);
 	generate_particles(fileKeys);
 	algName = NAME_VERSION_PSO;
 }
@@ -18,7 +22,7 @@ OriginalPSO::OriginalPSO(IDecrypt *&decrypt, IFunctionCost *&func,
 void OriginalPSO::update_particles() {
 	double next_velocity;
 	Particle *particle;
-	for (int i_th = 0; i_th < INITIAL_POPULATION; i_th++) {
+	for (unsigned int i_th = 0; i_th < INITIAL_POPULATION; i_th++) {
 		particle = &swarm[i_th];
 		for (unsigned int j_th = 0; j_th < dim; j_th++) {
 			next_velocity = INETRIA_WEIGHT * particle->getIndVelocity(j_th)

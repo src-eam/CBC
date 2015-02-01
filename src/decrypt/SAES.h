@@ -2,6 +2,8 @@
 #define SAES_H_
 #include <string>
 #include <stdint.h>
+#include <vector>
+
 class SAES {
 protected:
 	static const uint8_t s_box[16];
@@ -11,8 +13,7 @@ protected:
 	uint8_t state[2];
 	std::string text;
 
-	void keyExpand(uint8_t key[]);
-	void keyExpand(const int &k);
+	void keyExpand(const std::vector<uint8_t> &key);
 	uint8_t subNib(uint8_t nib) const;
 	uint8_t rotSubNib(uint8_t nib) const;
 	void shiftRows();
@@ -20,7 +21,6 @@ protected:
 	uint8_t g_mul(uint8_t a, uint8_t b) const; //GF(2^4)/x^4 + x + 1
 
 public:
-	static const unsigned int KEY_MAX = 65535;
 	static const unsigned int DIM_SAES = 16;
 	std::string getText();
 	virtual ~SAES() = 0;

@@ -10,8 +10,12 @@ const std::string TasgetirenPSO::NAME_VERSION_PSO = "Tasgetiren_PSO";
 
 TasgetirenPSO::TasgetirenPSO(IDecrypt *&decrypt, IFunctionCost *&func,
 		IRandomGenerator *&randG, const std::string &outFile,
-		const std::string &fileKeys) {
-	this->init_pso(decrypt, func, randG, outFile);
+		const std::string &fileKeys,const unsigned int &population) {
+	this->R_MUT = 0.4;
+	this->C1 = 1.42694;
+	this->C2 = 1.42694;
+	this->INETRIA_WEIGHT = 1;
+	this->init_pso(decrypt, func, randG, outFile,population);
 	generate_particles(fileKeys);
 	algName = NAME_VERSION_PSO;
 }
@@ -24,7 +28,7 @@ void TasgetirenPSO::update_velocity(double &promV, double velocity) {
 void TasgetirenPSO::update_particles() {
 	double next_velocity;
 	Particle *particle;
-	for (int i_th = 0; i_th < INITIAL_POPULATION; i_th++) {
+	for (unsigned int i_th = 0; i_th < INITIAL_POPULATION; i_th++) {
 		particle = &swarm[i_th];
 		for (unsigned int j_th = 0; j_th < dim; j_th++) {
 			next_velocity = C1 * randGenAlg->getRandom_01()
@@ -45,4 +49,3 @@ void TasgetirenPSO::update_particles() {
 		update_best_particle(particle, i_th);
 	}
 }
-

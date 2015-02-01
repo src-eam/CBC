@@ -10,18 +10,21 @@ const std::string ModifiedPSO::NAME_VERSION_PSO = "Modified_PSO";
 
 ModifiedPSO::ModifiedPSO(IDecrypt *&decrypt, IFunctionCost *&func,
 		IRandomGenerator *&randG, const std::string &outFile,
-		const std::string &fileKeys) {
-	this->init_pso(decrypt, func, randG, outFile);
+		const std::string &fileKeys, const unsigned int &population) {
+	this->R_MUT = 0.4;
+	this->C1 = 1.42694;
+	this->C2 = 1.42694;
+	this->INETRIA_WEIGHT = 0.689343;
+	this->init_pso(decrypt, func, randG, outFile, population);
 	generate_particles(fileKeys);
 	algName = NAME_VERSION_PSO;
-	genotype.resize(INITIAL_POPULATION,std::vector<double>(dim));
+	genotype.resize(INITIAL_POPULATION, std::vector<double>(dim));
 	std::vector<std::vector<double>>::iterator it;
-	for(it = genotype.begin();it != genotype.end();it++) {
-		for(unsigned int index = 0; index < dim; index++) {
-			(*it)[index] = randGenAlg->getMinMaxRandom(G_MIN,G_MAX);
+	for (it = genotype.begin(); it != genotype.end(); it++) {
+		for (unsigned int index = 0; index < dim; index++) {
+			(*it)[index] = randGenAlg->getMinMaxRandom(G_MIN, G_MAX);
 		}
 	}
-
 }
 
 void ModifiedPSO::update_genotype(double &promG, double velocity) {
@@ -33,7 +36,7 @@ void ModifiedPSO::update_particles() {
 	double next_velocity;
 	double next_genotype;
 	Particle *particle;
-	for (int i_th = 0; i_th < INITIAL_POPULATION; i_th++) {
+	for (unsigned int i_th = 0; i_th < INITIAL_POPULATION; i_th++) {
 		particle = &swarm[i_th];
 		for (unsigned int j_th = 0; j_th < dim; j_th++) {
 			next_velocity = INETRIA_WEIGHT * particle->getIndVelocity(j_th)

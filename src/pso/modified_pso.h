@@ -22,7 +22,7 @@ protected:
 public:
 	ModifiedPSO(IDecrypt *&decrypt, IFunctionCost *&func,
 			IRandomGenerator *&randG, const std::string &outFile,
-			const std::string & fileKeys);
+			const std::string & fileKeys, const unsigned int &population);
 	~ModifiedPSO() {};
 };
 

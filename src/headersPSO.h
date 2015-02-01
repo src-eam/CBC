@@ -8,6 +8,7 @@
 #define HEADERS_H_
 
 #include "decrypt/DecryptSAES.h"
+#include "decrypt/DecryptAES.h"
 #include "functions/Rubbish_Grams.h"
 #include "functions/Select_Grams.h"
 #include "generators/DEV_Generator.h"

@@ -20,8 +20,8 @@ protected:
 	void update_velocity(double &promV, double v);
 public:
 	TasgetirenPSO(IDecrypt *&decrypt, IFunctionCost *&func,
-				IRandomGenerator *&randG, const std::string &outFile,
-				const std::string & fileKeys);
+			IRandomGenerator *&randG, const std::string &outFile,
+			const std::string & fileKeys, const unsigned int &population);
 	~TasgetirenPSO() {};
 };
 

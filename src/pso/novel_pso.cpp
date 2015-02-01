@@ -10,31 +10,35 @@ const std::string NovelPSO::NAME_VERSION_PSO = "Novel_PSO";
 
 NovelPSO::NovelPSO(IDecrypt *&decrypt, IFunctionCost *&func,
 		IRandomGenerator *&randG, const std::string &outFile,
-		const std::string & fileKeys) {
-	this->init_pso(decrypt, func, randG, outFile);
+		const std::string & fileKeys, const unsigned int &population) {
+	this->R_MUT = 0.4;
+	this->C1 = 3.0;
+	this->C2 = 1.0;
+	this->INETRIA_WEIGHT = 0.96;
+	this->init_pso(decrypt, func, randG, outFile, population);
 	//generate_particles(fileKeys);
 	algName = NAME_VERSION_PSO;
 	vel_one.resize(INITIAL_POPULATION, std::vector<double>(dim));
 	vel_zero.resize(INITIAL_POPULATION, std::vector<double>(dim));
 
-	std::vector<unsigned int> keysGen(INITIAL_POPULATION);
+	std::vector<std::vector<uint8_t>> keysGen(INITIAL_POPULATION);
 	generateSwarmKeys(keysGen, fileKeys);
 	double cur_cost = 0, best_cost = UINT32_MAX;
-	int cur_key, pos_index = 0;
+	int pos_index = 0;
 	//DEV_Generator genD("/dev/urandom");
-	for (int index = 0; index < INITIAL_POPULATION; index++) {
-		cur_key = keysGen[index];
-		cur_cost = compute_cost_value(cur_key);
+	for (unsigned int index = 0; index < INITIAL_POPULATION; index++) {
 		Particle newParticle(dim);
-		newParticle.setValueParticle(cur_key);
+		//std::vector<uint8_t> tt = keysGen[index];
+		convert_key_to_binary(keysGen[index], newParticle);
+		keysInit[index] = newParticle.getValueParticle();
+		cur_cost = compute_cost_value(keysGen[index]);
+		//newParticle.setValueParticle(cur_key);
 		newParticle.setCost(cur_cost);
 		if (cur_cost < best_cost) {
 			pos_index = index;
 			best_cost = cur_cost;
 		}
 		for (unsigned int j = 0; j < dim; j++) {
-			newParticle.setIndParticle(j, cur_key & 1);
-			cur_key >>= 1;
 			//newParticle.setIndVelocity(j, genD.getMinMaxRandom(-4, 4));
 			//newParticle.setIndVelocity(j, 0);
 			//newParticle.setIndVelocity(j, randGenAlg->getMinMaxRandom(-4, 4));
@@ -60,7 +64,7 @@ void NovelPSO::update_particles() {
 	unsigned int tmp;
 	double next_velocity;
 	Particle *particle;
-	for (int i_th = 0; i_th < INITIAL_POPULATION; i_th++) {
+	for (unsigned int i_th = 0; i_th < INITIAL_POPULATION; i_th++) {
 		particle = &swarm[i_th];
 		for (unsigned int j_th = 0; j_th < dim; j_th++) {
 			tmp = p_best[i_th].getIndParticle(j_th);
@@ -107,3 +111,4 @@ void NovelPSO::update_particles() {
 		update_best_particle(particle, i_th);
 	}
 }
+

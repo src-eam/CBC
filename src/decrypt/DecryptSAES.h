@@ -17,9 +17,10 @@ protected:
 	void invMixColumns();
 	void decryptSAES();
 public:
-	virtual std::string decrypt(const int &key);
-	virtual void decrypt(std::string & resultDecrypt,const int &k);
-	virtual unsigned int getPossibleKey() const;
+	virtual std::string decrypt(const std::vector<uint8_t> &key);
+	virtual void decrypt(std::string & resultDecrypt,
+			const std::vector<uint8_t> &key);
+	virtual void getPossibleKey(std::vector<uint8_t> &key) const;
 	virtual unsigned int getDimDecrypt() const;
 	virtual unsigned int getLengthData() const;
 
