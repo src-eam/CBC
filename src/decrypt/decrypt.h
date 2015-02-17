@@ -18,6 +18,7 @@ public:
 	virtual void getPossibleKey(std::vector<uint8_t> &key) const = 0;
 	virtual unsigned int getDimDecrypt() const = 0;
 	virtual unsigned int getLengthData() const = 0;
+	virtual std::string getCipherName() const = 0;
 	virtual ~IDecrypt() {};
 };
 

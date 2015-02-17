@@ -8,7 +8,6 @@ class SAES {
 protected:
 	static const uint8_t s_box[16];
 	const static int Nk = 2;
-
 	uint8_t wwKey[6];
 	uint8_t state[2];
 	std::string text;

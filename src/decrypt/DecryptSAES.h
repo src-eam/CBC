@@ -23,7 +23,7 @@ public:
 	virtual void getPossibleKey(std::vector<uint8_t> &key) const;
 	virtual unsigned int getDimDecrypt() const;
 	virtual unsigned int getLengthData() const;
-
+	virtual std::string getCipherName() const;
 	DecryptSAES();
 	explicit DecryptSAES(const std::string &txt);
 	~DecryptSAES();

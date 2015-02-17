@@ -29,8 +29,7 @@ NovelPSO::NovelPSO(IDecrypt *&decrypt, IFunctionCost *&func,
 	for (unsigned int index = 0; index < INITIAL_POPULATION; index++) {
 		Particle newParticle(dim);
 		//std::vector<uint8_t> tt = keysGen[index];
-		convert_key_to_binary(keysGen[index], newParticle);
-		keysInit[index] = newParticle.getValueParticle();
+		convert_key_to_binary(keysGen[index], newParticle);;
 		cur_cost = compute_cost_value(keysGen[index]);
 		//newParticle.setValueParticle(cur_key);
 		newParticle.setCost(cur_cost);

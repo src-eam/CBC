@@ -125,6 +125,7 @@ void IPSO::convert_key_to_binary(const std::vector<uint8_t> &key,
 double IPSO::compute_cost_value(const std::vector<uint8_t> &key) {
 	std::string decryptTxt;
 	decryptAlg->decrypt(decryptTxt, key);
+	search_keys++;
 	return funcCost->getCost(decryptTxt);
 }
 
@@ -166,7 +167,6 @@ void IPSO::init_pso(IDecrypt *&decrypt, IFunctionCost *&func,
 	p_best.reserve(INITIAL_POPULATION);
 	//key_cost.resize(1 << this->dim,-1);
 	search_keys = 0;
-	keysInit.resize(INITIAL_POPULATION);
 //	output.open(outFile);
 //	if (!output.is_open()) {
 //		std::cerr << "Error opening file : report.txt" << std::endl;
@@ -181,7 +181,6 @@ void IPSO::generate_particles(const std::string &fileKeys) {
 	for (unsigned int index = 0; index < INITIAL_POPULATION; index++) {
 		Particle newParticle(dim);
 		convert_key_to_binary(keysGen[index], newParticle);
-		keysInit[index] = newParticle.getValueParticle();
 		cur_cost = compute_cost_value(keysGen[index]);
 		newParticle.setCost(cur_cost);
 		key_cost[newParticle.getValueParticle()] = cur_cost;
@@ -195,11 +194,11 @@ void IPSO::generate_particles(const std::string &fileKeys) {
 		swarm.push_back(newParticle);
 		p_best.push_back(newParticle);
 	}
-	search_keys = INITIAL_POPULATION;
+	//search_keys = INITIAL_POPULATION;
 	g_best = p_best[pos_index];
 }
 
-void IPSO::printInit(std::ostream & os) {
+/*void IPSO::printInit(std::ostream & os) {
 	os << "ALGORITHM: " << getAlgName() << std::endl;
 	os << "DATA_LENGTH: " << decryptAlg->getLengthData() << std::endl;
 	os << "RAND: " << randGenAlg->getNameGenerator() << std::endl;
@@ -215,7 +214,7 @@ void IPSO::printInit(std::ostream & os) {
 		os << (*it) << std::endl;
 	}
 	//os << "G_BEST_INIT: " << g_best << "\n\n";
-}
+}*/
 
 void IPSO::update_best_particle(Particle *&particle,
 		const unsigned int &index) {
@@ -229,7 +228,6 @@ void IPSO::update_best_particle(Particle *&particle,
 	else {
 		cur_cost = compute_cost_value(cur_key);
 		key_cost[cur_key_string] = cur_cost;
-		search_keys++;
 	}
 	particle->setCost(cur_cost);
 	if (cur_cost <= p_best[index].getCost()) {
@@ -270,6 +268,27 @@ unsigned int IPSO::attacking_pso() {
 
 void IPSO::setIteration(const unsigned int &iteration) {
 	this->NUMBER_OF_ITERATION = iteration;
+}
+
+unsigned int IPSO::getInitPopulation() const {
+	return INITIAL_POPULATION;
+}
+
+std::string IPSO::getParameters() const {
+	std::string paramStr = "C1: " + std::to_string(C1) + "; C2: "
+			+ std::to_string(C2) + "; INETRIA_WEIGHT: "
+			+ std::to_string(INETRIA_WEIGHT) + "; R_MUT: "
+			+ std::to_string(R_MUT) + "\n";
+	return paramStr;
+}
+
+unsigned int IPSO::getIterations() const {
+	return NUMBER_OF_ITERATION;
+}
+
+Particle IPSO::getParticle(const unsigned int & ind) const {
+	return (ind < INITIAL_POPULATION) ?
+			swarm[ind] : swarm[INITIAL_POPULATION - 1];
 }
 
 IPSO::~IPSO() {

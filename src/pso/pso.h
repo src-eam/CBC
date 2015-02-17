@@ -56,10 +56,9 @@ protected:
 	std::vector<Particle> p_best;
 	std::unordered_map<std::string, double> key_cost;
 	Particle g_best;
-	unsigned int search_keys;
+	unsigned int search_keys = 0;
 	//std::ofstream output;
 	std::string algName;
-	std::vector<std::string> keysInit;
 
 	double signum_function(const double &v) const;
 //	unsigned int masbin_to_int(Particle *&p) const;
@@ -77,10 +76,14 @@ protected:
 			const unsigned int &population);
 	void update_best_particle(Particle *& particle, const unsigned int &index);
 public:
-	void printInit(std::ostream & os);
+	unsigned int  getInitPopulation() const;
+	std::string getParameters() const;
+	unsigned int getIterations() const;
+	//void printInit(std::ostream & os);
 	std::string getAlgName() const;
 	unsigned int getSearchKeys() const;
 	Particle getBestParticle() const;
+	Particle getParticle(const unsigned int & ind) const;
 	unsigned int attacking_pso();
 	void setIteration(const unsigned int &iteration);
 	virtual ~IPSO();

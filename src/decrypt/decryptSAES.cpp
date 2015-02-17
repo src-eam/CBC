@@ -84,3 +84,7 @@ void DecryptSAES::getPossibleKey(std::vector<uint8_t> &key) const {
 unsigned int DecryptSAES::getDimDecrypt() const {
 	return DIM_SAES;
 }
+
+std::string DecryptSAES::getCipherName() const {
+	return "SAES";
+}
